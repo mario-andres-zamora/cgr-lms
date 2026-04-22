@@ -1,0 +1,93 @@
+services:
+  # MariaDB Database
+  mariadb:
+    image: mariadb:11.2
+    container_name: mia-lms-mariadb
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Costa_Rica}
+    env_file: .env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - nginxproxymanager_default
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7.2-alpine
+    container_name: mia-lms-redis
+    restart: unless-stopped
+    command: [ "redis-server", "--requirepass", "${REDIS_PASSWORD}", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru" ]
+    environment:
+      TZ: ${TZ:-America/Costa_Rica}
+    env_file: .env
+    volumes:
+      - redis_data:/data
+    networks:
+      - nginxproxymanager_default
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Backend API (Node.js/Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mia-lms-backend
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Costa_Rica}
+      NODE_ENV: production
+      PORT: 5001
+    env_file: .env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - nginxproxymanager_default
+    healthcheck:
+      test: [ "CMD", "node", "-e", "fetch('http://localhost:5001/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # Frontend (React + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+    container_name: mia-lms-frontend
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - nginxproxymanager_default
+
+volumes:
+  mariadb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  nginxproxymanager_default:
+    external: true

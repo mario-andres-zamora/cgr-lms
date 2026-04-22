@@ -1,0 +1,430 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Fondo basado en el Primario institucional pero oscurecido para modo oscuro */
+    --background: 229 46% 14%;
+    --foreground: 0 0% 100%;
+
+    /* Color Primario: PANTONE REFLEX BLUE U #384A99 */
+    --primary: 229 46% 41%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Color Secundario: PANTONE 152 U #E57B3C */
+    --secondary: 22 75% 57%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Colores Complementarios */
+    --comp-blue: 198 75% 52%;
+    /* #28a9e0 */
+    --comp-yellow: 36 93% 61%;
+    /* #f8ae40 */
+    --comp-gray: 0 0% 86%;
+    /* #dbdbdb */
+
+    --border: 0 0% 15%;
+  }
+
+  body {
+    @apply bg-[#161b33] text-white min-h-screen text-base antialiased selection:bg-primary-500/30;
+    background-image:
+      radial-gradient(circle at 0% 0%, rgba(56, 74, 153, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 100% 100%, rgba(229, 123, 60, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+  }
+}
+
+/* Animaciones adicionales */
+.animate-spin-slow {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wiggle {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(10deg);
+  }
+
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.animate-float-subtle {
+  animation: float-subtle 3s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+@keyframes progress-energy-flow {
+  0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  20% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  80% { opacity: 0.5; }
+  100% { transform: translateX(250%) skewX(-15deg); opacity: 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(56, 74, 153, 0.4)); }
+  50% { filter: drop-shadow(0 0 8px rgba(229, 123, 60, 0.6)); }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 37%,
+    rgba(255, 255, 255, 0.03) 63%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 2s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    transition: all 0.7s ease-in-out;
+  }
+
+  20% {
+    left: 100%;
+    transition: all 0.7s ease-in-out;
+  }
+
+  100% {
+    left: 100%;
+    transition: all 0.7s ease-in-out;
+  }
+}
+
+.animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shine::after {
+  content: "";
+  position: absolute;
+  top: -110%;
+  left: -210%;
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+  transform: rotate(30deg);
+  background: rgba(255, 255, 255, 0.13);
+  background: linear-gradient(to right,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.13) 77%,
+      rgba(255, 255, 255, 0.5) 92%,
+      rgba(255, 255, 255, 0.0) 100%);
+}
+
+.animate-shine:hover::after {
+  opacity: 1;
+  top: -30%;
+  left: -30%;
+  transition-property: left, top, opacity;
+  transition-duration: 0.7s, 0.7s, 0.1s;
+  transition-timing-function: ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@layer components {
+
+  /* Botones alineados a la marca */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 border border-primary-400/20;
+  }
+
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-500 hover:to-secondary-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-secondary-400/20;
+  }
+
+  /* Tarjetas con estilo "Glassmorphism" azulado */
+  .card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 shadow-xl relative overflow-hidden;
+  }
+
+  .card-hover {
+    @apply hover:bg-white/10 hover:border-primary-400/30 hover:transform hover:-translate-y-1 transition-all duration-300;
+  }
+
+  /* Campos de entrada mejorados */
+  .input-field {
+    @apply w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all duration-200 text-white placeholder-gray-400;
+  }
+
+  /* Badges alineados a la paleta complementaria */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-success {
+    @apply bg-green-500/20 text-green-400 border border-green-500/30;
+  }
+
+  .badge-warning {
+    @apply bg-complementary-yellow/20 text-complementary-yellow border border-complementary-yellow/30;
+  }
+
+  .badge-info {
+    @apply bg-complementary-blue/20 text-complementary-blue border border-complementary-blue/30;
+  }
+
+  /* Barra de progreso con gradiente corporativo */
+  .progress-bar {
+    @apply w-full h-2 bg-black/20 rounded-full overflow-hidden border border-white/5;
+  }
+
+  .progress-fill {
+    @apply h-full bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full transition-all duration-1000 ease-out relative overflow-hidden;
+    animation: pulse-glow 3s infinite ease-in-out;
+  }
+
+  .progress-fill::after {
+    content: "";
+    @apply absolute inset-0 w-[40%] h-full;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2) 20%,
+      rgba(255, 255, 255, 0.6) 50%,
+      rgba(255, 255, 255, 0.2) 80%,
+      transparent
+    );
+    animation: progress-energy-flow 2.5s infinite ease-in-out;
+    filter: blur(1px);
+  }
+}
+
+/* Scrollbar personalizado azulado */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1b2341;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #384A99;
+  border-radius: 5px;
+  border: 2px solid #1b2341;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4d5eb0;
+}
+
+/* Comic Bubble Toast Styles */
+.comic-bubble-toast {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 35px !important;
+  overflow: visible !important;
+  width: 100%;
+  max-width: 90vw;
+  justify-content: center;
+}
+
+/* La burbuja real */
+.comic-bubble-content {
+  background: #161b33 !important;
+  color: white !important;
+  border: 4px solid white !important;
+  border-radius: 2.5rem !important;
+  padding: 25px 45px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  font-size: 1.35rem !important;
+  position: relative !important;
+  box-shadow: none !important;
+  z-index: 10;
+  min-width: 200px;
+  max-width: 600px;
+  line-height: 1.2;
+}
+
+/* El puntero de la burbuja (Tail) */
+.comic-bubble-content::before {
+  content: "";
+  position: absolute;
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 15px 30px 15px 0;
+  border-color: transparent white transparent transparent;
+}
+
+.comic-bubble-content::after {
+  content: "";
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 15px 30px 15px 0;
+  border-color: transparent #161b33 transparent transparent;
+}
+
+/* Variantes de color para la burbuja */
+.comic-bubble-success { border-color: #22c55e !important; }
+.comic-bubble-success::before { border-color: transparent #22c55e transparent transparent !important; }
+
+.comic-bubble-error { border-color: #ef4444 !important; }
+.comic-bubble-error::before { border-color: transparent #ef4444 transparent transparent !important; }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .comic-bubble-toast {
+    gap: 15px !important;
+    max-width: 95vw;
+  }
+  
+  .comic-bubble-content {
+    font-size: 1.1rem !important;
+    padding: 15px 25px !important;
+    border-width: 3px !important;
+    border-radius: 1.5rem !important;
+  }
+
+  /* Ajustar el CyberCat a través de la clase aplicada en AppToaster */
+  .comic-bubble-toast svg {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .comic-bubble-content::before {
+    left: -20px;
+    border-width: 10px 20px 10px 0;
+  }
+  .comic-bubble-content::after {
+    left: -16px;
+    border-width: 10px 20px 10px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .comic-bubble-toast {
+    flex-direction: column !important; /* En móviles muy pequeños, apilar para ganar espacio */
+    gap: 10px !important;
+  }
+
+  .comic-bubble-content::before, 
+  .comic-bubble-content::after {
+    display: none !important; /* Quitar el rabillo en móviles para ahorrar ancho */
+  }
+
+  .comic-bubble-content {
+    font-size: 0.95rem !important;
+    text-align: center !important;
+    border-radius: 1.2rem !important;
+  }
+}
+
+@keyframes comic-pop {
+  0% { transform: scale(0.8) rotate(-2deg); opacity: 0; }
+  70% { transform: scale(1.05) rotate(1deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.animate-comic-pop {
+  animation: comic-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}

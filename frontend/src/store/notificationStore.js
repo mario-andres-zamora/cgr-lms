@@ -1,0 +1,129 @@
+import { create } from 'zustand';
+import axios from 'axios';
+import { useAuthStore } from './authStore';
+import { useSoundStore } from './soundStore';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+export const useNotificationStore = create((set, get) => ({
+    notifications: [],
+    unreadCount: 0,
+    loading: false,
+    pendingLevelUp: null,
+    pendingModuleCompletion: null,
+    badgeQueue: [],
+    pendingBadge: null, 
+
+    setPendingLevelUp: (data) => {
+        set({ pendingLevelUp: data });
+    },
+    clearLevelUp: () => set({ pendingLevelUp: null }),
+
+    setPendingBadge: (badge) => {
+        if (!badge) return;
+        const badges = Array.isArray(badge) ? badge : [badge];
+        
+        set(state => {
+            // Filtrar duplicados: no agregar si ya está en la cola o es la que se muestra
+            const newBadges = badges.filter(b => 
+                !state.badgeQueue.some(qb => qb.id === b.id) && 
+                (!state.pendingBadge || state.pendingBadge.id !== b.id)
+            );
+
+            if (newBadges.length === 0) return state;
+
+            return { 
+                badgeQueue: [...state.badgeQueue, ...newBadges],
+                pendingBadge: state.pendingBadge || newBadges[0]
+            };
+        });
+    },
+    clearBadge: () => {
+        set(state => {
+            const newQueue = state.badgeQueue.slice(1);
+            return {
+                badgeQueue: newQueue,
+                pendingBadge: newQueue.length > 0 ? newQueue[0] : null
+            };
+        });
+    },
+
+    setPendingModuleCompletion: (data) => {
+        set({ pendingModuleCompletion: data });
+    },
+    clearModuleCompletion: () => set({ pendingModuleCompletion: null }),
+
+    fetchNotifications: async () => {
+        set({ loading: true });
+        try {
+            const token = useAuthStore.getState().token;
+            const response = await axios.get(`${API_URL}/notifications`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.success) {
+                const newNotifications = response.data.notifications;
+                const oldNotifications = get().notifications;
+
+                // Si hay notificaciones nuevas que no estaban antes, sonar alerta
+                if (newNotifications.length > oldNotifications.length && oldNotifications.length > 0) {
+                    useSoundStore.getState().playSound('/sounds/alert.mp3');
+                }
+
+                set({ notifications: newNotifications, loading: false });
+                get().fetchUnreadCount();
+            }
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+            set({ loading: false });
+        }
+    },
+
+    fetchUnreadCount: async () => {
+        try {
+            const token = useAuthStore.getState().token;
+            const response = await axios.get(`${API_URL}/notifications/unread-count`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.success) {
+                set({ unreadCount: response.data.count });
+            }
+        } catch (error) {
+            console.error('Error fetching unread count:', error);
+        }
+    },
+
+    markAsRead: async (id) => {
+        try {
+            const token = useAuthStore.getState().token;
+            await axios.put(`${API_URL}/notifications/${id}/read`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            // Actualizar estado local
+            set(state => ({
+                notifications: state.notifications.map(n =>
+                    n.id === id ? { ...n, is_read: 1 } : n
+                ),
+                unreadCount: Math.max(0, state.unreadCount - 1)
+            }));
+        } catch (error) {
+            console.error('Error marking as read:', error);
+        }
+    },
+
+    markAllAsRead: async () => {
+        try {
+            const token = useAuthStore.getState().token;
+            await axios.put(`${API_URL}/notifications/read-all`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            set(state => ({
+                notifications: state.notifications.map(n => ({ ...n, is_read: 1 })),
+                unreadCount: 0
+            }));
+        } catch (error) {
+            console.error('Error marking all as read:', error);
+        }
+    }
+}));

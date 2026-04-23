@@ -25,7 +25,7 @@ export default function LoginHeader() {
                     transition={{ delay: 0.4 }}
                     className="text-5xl md:text-6xl font-black text-white tracking-tighter leading-none"
                 >
-                    CGRLMS<span className="text-secondary-500"></span>
+                    CGR<span className="text-secondary-500">LMS</span>
                 </motion.h1>
                 <motion.p
                     initial={{ opacity: 0 }}

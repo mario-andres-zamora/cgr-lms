@@ -4,269 +4,70 @@
 ### 🏗️ Arquitectura del Sistema
 
 #### **Stack Tecnológico**
-- **Frontend**: React 19 + Vite + TailwindCSS
-- **Backend**: Node.js + Express
-- **Base de Datos**: MariaDB 11.2
-- **Cache**: Redis 7.2
-- **Autenticación**: Google OAuth 2.0
+- **Frontend**: React 19 + Vite + TailwindCSS + Framer Motion
+- **Backend**: Node.js + Express + MariaDB
+- **Cache**: Redis 7.2 (Sesiones y Rate Limiting)
+- **Base de Datos**: MariaDB 11.2 (Optimizado para 700+ usuarios)
+- **Autenticación**: Google OAuth 2.0 (Dominio @cgr.go.cr)
 - **Containerización**: Docker + Docker Compose
-- **Reverse Proxy**: Nginx
+- **Reverse Proxy**: Nginx (Configuración de seguridad y caché)
 
-### 📊 Capacidad del Sistema
-- ✅ Soporta **700 funcionarios** concurrentes
-- ✅ Pool de conexiones optimizado (50 conexiones simultáneas)
-- ✅ Cache Redis para sesiones y datos frecuentes
-- ✅ Rate limiting (100 requests/15min por IP)
+### 📊 Capacidad y Rendimiento
+- ✅ Soporta **700 funcionarios** concurrentes.
+- ✅ Pool de conexiones optimizado y monitoreo de salud del backend.
+- ✅ Cache Redis para persistencia de sesiones y reducción de carga en DB.
+- ✅ Sistema de migraciones automáticas para integridad del schema (ej. `response_data`).
 
 ### 🔐 Seguridad Implementada
 
-#### **Autenticación**
-- Login exclusivo con Google OAuth (@cgr.go.cr)
-- Tokens JWT con expiración de 24 horas
-- Sesiones almacenadas en Redis
-- Verificación automática de dominio institucional
+#### **Autenticación y Acceso**
+- Login exclusivo con Google OAuth institucional.
+- Tokens JWT con rotación y expiración configurada.
+- Sesiones centralizadas en Redis para alta disponibilidad.
+- Validación de MFA con soporte para interacción rápida (Enter key).
 
-#### **Protección**
-- Helmet.js para headers de seguridad
-- CORS configurado
-- Rate limiting
-- Validación de inputs
-- SQL injection prevention (prepared statements)
-- XSS protection
+#### **Protección de Infraestructura**
+- Helmet.js para endurecimiento de headers.
+- CORS restrictivo por entorno.
+- Rate limiting inteligente (100 requests/15min).
+- Prevención de SQL Injection y XSS en todas las entradas.
+- Control de integridad en la reproducción de videos (bloqueo de adelantado).
 
-### 📚 Funcionalidades del LMS
+### 🎮 Gamificación y Juegos Interactivos
+El LMS incluye experiencias inmersivas diseñadas para aumentar el compromiso:
 
-#### **Para Estudiantes (Funcionarios)**
-1. **Dashboard Personal**
-   - Progreso general del curso
-   - Módulos completados
-   - Puntos y nivel de gamificación
-   - Próximas actividades
+1. **Data Tetris** 🕹️
+   - Juego de lógica cyberpunk donde el usuario limpia "sectores de datos corruptos".
+   - Sistema de vidas representado por corazones y puntuación basada en velocidad.
+   - Leaderboard global dedicado para los mejores "limpiadores de datos".
 
-2. **Módulos de Aprendizaje**
-   - 8 módulos completos (Febrero - Diciembre 2026)
-   - Lecciones interactivas
-   - Videos educativos
-   - Recursos descargables (PDFs, documentos)
+2. **Hackea al Vecino** 🔍
+   - Simulador de toma de decisiones en entornos de red.
+   - Sistema de pistas desbloqueables secuencialmente para guiar el aprendizaje.
 
-3. **Evaluaciones**
-   - Quizzes por módulo
-   - Múltiples intentos (máx. 3)
-   - Retroalimentación inmediata
-   - Puntaje mínimo: 80%
+3. **Guardianes de la CGR** 🛡️
+   - Sistema de rangos: Novato → Defensor → Guardián → CISO Honorario.
+   - Insignias dinámicas por completar hitos de seguridad.
 
-4. **Gamificación "Guardianes de la CGR"**
-   - Sistema de puntos
-   - 4 niveles: Novato → Defensor → Guardián → CISO Honorario
-   - Insignias por logros
-   - Tabla de clasificación (Leaderboard)
+### 📚 Funcionalidades Principales
 
-5. **Simulacros de Phishing**
-   - 3 campañas programadas (Feb, Jun, Dic)
-   - Tracking de clicks y reportes
-   - Puntos por reportar correctamente
+#### **Para el Usuario**
+- **Dashboard Dinámico**: Visualización de progreso, puntos y próximos módulos.
+- **Ranking Institucional**: Visualización clara del puesto global y por área.
+- **Lecciones Interactivas**: Videos, documentos y juegos inmersivos.
+- **Evaluaciones**: Quizzes con retroalimentación inmediata y límites de intentos.
+- **Certificación Automática**: Generación de certificados PDF con código de verificación.
 
-6. **Certificación**
-   - Certificado digital al completar
-   - Código único de verificación
-   - Descarga en PDF
+#### **Para el Administrador**
+- **Panel de Control**: Gestión integral de usuarios, roles y contenidos.
+- **Reportes Avanzados**:
+  - Exportación masiva a **CSV** de cumplimiento y completación.
+  - Analíticas de progreso global y por departamento con tooltips dinámicos.
+  - Conteo exacto de funcionarios que finalizaron el 100% de la capacitación.
+- **Simulacros de Phishing**: Programación, ejecución y seguimiento de campañas.
+- **Monitoreo de Logs**: Auditoría completa de acciones críticas y errores (Cybercat 500).
 
-#### **Para Administradores**
-1. **Gestión de Usuarios**
-   - Ver todos los funcionarios
-   - Activar/desactivar cuentas
-   - Asignar roles (student, instructor, admin)
-
-2. **Gestión de Contenido**
-   - Crear/editar módulos
-   - Agregar lecciones y recursos
-   - Publicar/despublicar contenido
-
-3. **Reportes y Analíticas**
-   - Progreso general del curso
-   - Tasas de completación
-   - Resultados de quizzes
-   - Efectividad de simulacros de phishing
-   - Logs de actividad
-
-4. **Simulacros de Phishing**
-   - Programar campañas
-   - Ver resultados por usuario
-   - Estadísticas de clicks/reportes
-
-### 🗄️ Estructura de Base de Datos
-
-#### **Tablas Principales**
-1. `users` - Funcionarios del sistema
-2. `modules` - 8 módulos del curso
-3. `lessons` - Lecciones dentro de módulos
-4. `quizzes` - Evaluaciones
-5. `quiz_questions` - Preguntas de evaluaciones
-6. `quiz_options` - Opciones de respuesta
-7. `user_progress` - Progreso de cada usuario
-8. `quiz_attempts` - Intentos de evaluaciones
-9. `user_points` - Puntos y nivel de gamificación
-10. `gamification_activities` - Historial de puntos
-11. `phishing_simulations` - Campañas de phishing
-12. `phishing_results` - Resultados por usuario
-13. `certificates` - Certificados emitidos
-14. `resources` - Recursos adicionales
-15. `notifications` - Notificaciones del sistema
-16. `activity_logs` - Logs de auditoría
-
-### 🚀 Cómo Ejecutar el Sistema
-
-#### **Requisitos Previos**
-- Docker y Docker Compose instalados
-- Cuenta de Google Cloud con OAuth configurado
-- Credenciales de Google OAuth (Client ID y Secret)
-
-#### **Configuración Inicial**
-
-1. **Clonar y configurar variables de entorno**
-```bash
-cd cgr-lms
-cp backend/.env.example backend/.env
-```
-
-2. **Editar backend/.env con tus credenciales**
-```env
-GOOGLE_CLIENT_ID=tu-client-id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=tu-client-secret
-```
-
-3. **Crear archivo .env en la raíz para el frontend**
-```env
-VITE_API_URL=http://localhost:5000/api
-VITE_GOOGLE_CLIENT_ID=tu-client-id.apps.googleusercontent.com
-```
-
-4. **Levantar todos los servicios**
-```bash
-docker-compose up -d
-```
-
-5. **Verificar que todos los servicios estén corriendo**
-```bash
-docker-compose ps
-```
-
-#### **Acceso al Sistema**
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **Health Check**: http://localhost:5000/health
-
-#### **Usuarios de Prueba**
-- Admin: admin@cgr.go.cr
-- Funcionario: funcionario@cgr.go.cr
-
-### 💾 Backup y Recuperación
-
-El sistema requiere respaldos periódicos tanto de la base de datos como de los archivos subidos por los usuarios (certificados, recursos, fotos de perfil).
-
-#### **1. Respaldo de Base de Datos (MariaDB)**
-
-Para realizar un respaldo manual de la base de datos `cgr_lms`:
-
-```powershell
-# Crear un backup completo
-docker exec cgr-lms-mariadb mariadb-dump -u cgr_user -p"cgr_password_2026" cgr_lms > backup_$(Get-Date -Format "yyyyMMdd_HHmm").sql
-```
-
-#### **2. Restauración de Base de Datos**
-
-Para restaurar un archivo SQL en el contenedor:
-
-```powershell
-# Restaurar desde un archivo .sql
-cat backup_archivo.sql | docker exec -i cgr-lms-mariadb mariadb -u cgr_user -p"cgr_password_2026" cgr_lms
-```
-
-#### **3. Respaldo de Archivos (Uploads)**
-
-Los archivos subidos se encuentran en el volumen persistente `./uploads`. Se recomienda comprimir esta carpeta periódicamente:
-
-```powershell
-# Comprimir carpeta de uploads
-Compress-Archive -Path ./uploads/* -DestinationPath ./backups/uploads_$(Get-Date -Format "yyyyMMdd").zip
-```
-
-#### **4. Automatización (Recomendación)**
-
-Se recomienda configurar una tarea programada (Windows Task Scheduler) que ejecute un script de PowerShell para automatizar estos respaldos diariamente a las 00:00.
-
-### 📁 Estructura del Proyecto
-
-```
-cgr-lms/
-├── backend/
-│   ├── config/
-│   │   ├── database.js       # Conexión MariaDB
-│   │   └── logger.js          # Winston logger
-│   ├── middleware/
-│   │   └── auth.js            # Autenticación JWT
-│   ├── routes/
-│   │   ├── auth.js            # Google OAuth
-│   │   ├── modules.js         # Módulos del curso
-│   │   ├── users.js           # Gestión de usuarios
-│   │   ├── quizzes.js         # Evaluaciones
-│   │   ├── progress.js        # Progreso del usuario
-│   │   ├── gamification.js    # Sistema de puntos
-│   │   └── phishing.js        # Simulacros
-│   ├── logs/                  # Archivos de log
-│   ├── .env.example
-│   ├── Dockerfile
-│   ├── package.json
-│   └── server.js              # Servidor principal
-├── src/
-│   ├── components/
-│   │   ├── Layout.jsx         # Layout principal
-│   │   └── ProtectedRoute.jsx # Rutas protegidas
-│   ├── pages/
-│   │   ├── Login.jsx          # Login con Google
-│   │   ├── Dashboard.jsx      # Dashboard principal
-│   │   ├── Modules.jsx        # Lista de módulos
-│   │   ├── ModuleDetail.jsx   # Detalle de módulo
-│   │   ├── LessonView.jsx     # Vista de lección
-│   │   ├── QuizView.jsx       # Vista de quiz
-│   │   ├── Profile.jsx        # Perfil de usuario
-│   │   ├── Leaderboard.jsx    # Tabla de clasificación
-│   │   └── AdminPanel.jsx     # Panel de administración
-│   ├── store/
-│   │   └── authStore.js       # Estado de autenticación
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-├── database/
-│   └── init.sql               # Schema de base de datos
-├── nginx/
-│   └── nginx.conf             # Configuración Nginx
-├── docker-compose.yml
-├── tailwind.config.js
-├── postcss.config.js
-└── package.json
-```
-
-### 🎨 Diseño UI/UX
-
-#### **Características del Diseño**
-- ✨ Tema oscuro moderno (dark mode)
-- 🎭 Glassmorphism effects
-- 🌈 Gradientes vibrantes
-- ⚡ Animaciones suaves con Framer Motion
-- 📱 Totalmente responsive (mobile-first)
-- ♿ Accesible (WCAG 2.1)
-
-#### **Paleta de Colores**
-- **Primary**: Azul (#3b82f6)
-- **Secondary**: Teal (#14b8a6)
-- **Accent**: Naranja (#f59e0b)
-- **Success**: Verde (#10b981)
-- **Danger**: Rojo (#ef4444)
-- **Background**: Slate oscuro (#0f172a)
-
-### 📈 Módulos del Curso
-
+### 📈 Plan de Módulos 2026
 1. **Módulo 1** (Febrero): Fundamentos de Seguridad
 2. **Módulo 2** (Marzo): Protección de Datos
 3. **Módulo 3** (Abril): IA y Ciberseguridad
@@ -276,33 +77,71 @@ cgr-lms/
 7. **Módulo 7** (Octubre): Gestión de Incidentes
 8. **Módulo 8** (Noviembre): Aspectos Avanzados
 
-### 📝 Notas Importantes
+### 📁 Estructura del Proyecto
 
-1. **Google OAuth**: Necesitas crear un proyecto en Google Cloud Console y configurar las credenciales OAuth 2.0
-2. **Dominio**: El sistema solo permite login con correos @cgr.go.cr
-3. **Seguridad**: Cambiar todas las contraseñas y secrets en producción
-4. **Backups**: Configurar backups diarios de MariaDB
-5. **Logs**: Los logs se guardan en `backend/logs/`
-6. **Escalabilidad**: El sistema puede escalar horizontalmente agregando más instancias del backend
+```text
+cgr-lms/
+├── backend/                # API REST (Node.js/Express)
+│   ├── config/             # Conexión DB, Redis y Logger
+│   ├── controllers/        # Lógica de negocio por entidad
+│   ├── middleware/         # Auth, Validación, Error Handling
+│   ├── routes/             # Definición de end-points
+│   ├── services/           # Lógica compleja y migraciones DB
+│   └── server.js           # Punto de entrada principal
+├── frontend/               # Aplicación SPA (React/Vite)
+│   ├── src/
+│   │   ├── components/     # UI Reutilizable, Juegos, Layouts
+│   │   ├── pages/          # Vistas principales (Dashboard, Admin, etc.)
+│   │   ├── store/          # Estado global (Zustand/Context)
+│   │   └── assets/         # Imágenes, Estilos y Recursos
+│   └── vite.config.js      # Configuración de compilación
+├── database/               # Scripts SQL de inicialización (init.sql)
+├── nginx/                  # Configuración del proxy inverso
+├── uploads/                # Directorio persistente para archivos (certificados, recursos)
+└── docker-compose.yml      # Orquestación de contenedores
+```
 
-### 🎯 Objetivos Cumplidos
+### 🚀 Cómo Ejecutar el Sistema
 
-✅ Arquitectura completa con Docker Compose
-✅ Autenticación con Google OAuth
-✅ Base de datos MariaDB con schema completo
-✅ Cache con Redis para sesiones
-✅ Backend API con Express y seguridad centralizada (Error Handling, Express Validator)
-✅ Frontend React con diseño moderno predecible
-✅ Sistema de gamificación con líder en tiempo real
-✅ Módulos, lecciones, quizzes y perfil interconectados
-✅ Soporte para 700 usuarios concurrentes
-✅ Responsive design
-✅ Simulacros de phishing
-✅ Sistema de certificación
-✅ Refactorización del Backend usando Node.js Best Practices
+#### **Requisitos**
+- Docker & Docker Compose
+- Credenciales Google OAuth (Client ID & Secret)
+
+#### **Pasos Rápidos**
+
+1. **Configurar Entorno**:
+   ```bash
+   cp backend/.env.example backend/.env
+   # Editar backend/.env con GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET
+   ```
+
+2. **Despliegue con Docker**:
+   ```bash
+   # Desarrollo
+   docker-compose up -d
+   
+   # Producción
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+
+3. **Accesos**:
+   - **Frontend**: `http://localhost:3000`
+   - **API / Health**: `http://localhost:5000/health`
+   - **Usuarios Test**: `admin@cgr.go.cr` / `funcionario@cgr.go.cr`
+
+### 💾 Mantenimiento y Backups
+
+#### **Backup de Base de Datos (MariaDB)**
+```powershell
+docker exec cgr-lms-mariadb mariadb-dump -u cgr_user -p"cgr_password" cgr_lms > backup_$(Get-Date -Format "yyyyMMdd").sql
+```
+
+#### **Restauración**
+```powershell
+cat backup_archivo.sql | docker exec -i cgr-lms-mariadb mariadb -u cgr_user -p"cgr_password" cgr_lms
+```
 
 ---
 
-**Desarrollado para**: Contraloría General de la República de Costa Rica
-**Programa**: CGR Segur@ - Capacitación en Ciberseguridad 2026
+**CGR Segur@ 2026** - *Fortaleciendo la cultura de ciberseguridad en la Contraloría General de la República.*
 **Basado en**: ISO/IEC 27001:2022

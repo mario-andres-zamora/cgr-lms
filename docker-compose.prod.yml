@@ -83,9 +83,9 @@ services:
       - nginxproxymanager_default
 
 volumes:
-  mariadb_data:
+  cgrlms_mariadb_data:
     driver: local
-  redis_data:
+  cgrlms_redis_data:
     driver: local
 
 networks:

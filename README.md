@@ -126,7 +126,7 @@ cgr-lms/
 
 3. **Accesos**:
    - **Frontend**: `http://localhost:3000`
-   - **API / Health**: `http://localhost:5000/health`
+   - **API / Health**: `http://localhost:5002/health`
    - **Usuarios Test**: `admin@cgr.go.cr` / `funcionario@cgr.go.cr`
 
 ### 💾 Mantenimiento y Backups

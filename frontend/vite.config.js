@@ -33,11 +33,11 @@ export default defineConfig(({ mode }) => {
       },
       proxy: {
         '/api': {
-          target: 'http://backend:5001',
+          target: 'http://backend:5002',
           changeOrigin: true
         },
         '/uploads': {
-          target: 'http://backend:5001',
+          target: 'http://backend:5002',
           changeOrigin: true
         }
       }

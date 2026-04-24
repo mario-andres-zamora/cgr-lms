@@ -47,7 +47,7 @@ services:
     environment:
       TZ: ${TZ:-America/Costa_Rica}
       NODE_ENV: production
-      PORT: 5001
+      PORT: 5002
     env_file: .env
     depends_on:
       mariadb:
@@ -59,7 +59,7 @@ services:
     networks:
       - nginxproxymanager_default
     healthcheck:
-      test: [ "CMD", "node", "-e", "fetch('http://localhost:5001/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))" ]
+      test: [ "CMD", "node", "-e", "fetch('http://localhost:5002/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))" ]
       interval: 10s
       timeout: 5s
       retries: 5

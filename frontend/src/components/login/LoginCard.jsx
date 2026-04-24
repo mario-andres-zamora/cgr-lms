@@ -68,18 +68,6 @@ export default function LoginCard({ onLogin, isLoading }) {
                         )}
                     </motion.button>
 
-                    {/* System Info Box */}
-                    <div className="p-5 rounded-2xl bg-primary-500/5 border border-primary-500/10 flex gap-4 items-start">
-                        <div className="p-2 bg-primary-500/10 rounded-lg text-primary-400">
-                            <Shield className="w-5 h-5 font-black" />
-                        </div>
-                        <div className="space-y-1">
-                            <h4 className="text-[10px] font-black text-primary-400 uppercase tracking-widest">Acceso Restringido</h4>
-                            <p className="text-xs text-gray-500 leading-relaxed font-medium">
-                                Sistema exclusivo para funcionarios de la Contraloría General de la República. Debe iniciar sesión con su cuenta de Google institucional.
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </motion.div>
